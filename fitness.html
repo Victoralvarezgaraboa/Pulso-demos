@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Box · semáforo de socios</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--brand:#0f2318;--acc:#16A34A;--ink:#14231b;--muted:#6f8579;--line:#dfe8e2;--app:#eef4f0;--paper:#fff;
+    --verde:#16A34A;--ambar:#F59E0B;--rojo:#EF4444;--radius:16px;--shadow:0 1px 2px rgba(15,35,24,.06),0 10px 30px rgba(15,35,24,.08)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--app);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Archivo',sans-serif}
+  .topbar{position:sticky;top:0;z-index:30;background:var(--brand);color:#fff;display:flex;align-items:center;gap:12px;padding:13px 18px}
+  .logo{width:38px;height:38px;border-radius:10px;background:var(--acc);color:#fff;display:grid;place-items:center;flex:0 0 auto}
+  .topbar .name{font-family:'Archivo';font-weight:700;font-size:17px}
+  .topbar .sub{font-size:11px;opacity:.72;text-transform:uppercase;letter-spacing:.4px}
+  .topbar .spacer{flex:1}
+  .badge{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#9be3b6;border:1px solid rgba(155,227,182,.4);border-radius:100px;padding:4px 10px}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 18px 50px}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
+  @media(min-width:760px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;position:relative}
+  .kpi .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+  .kpi .v{font-family:'Archivo';font-weight:800;font-size:26px;line-height:1}
+  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:5px}
+  .kpi.dv .v{color:var(--verde)}.kpi.da .v{color:var(--ambar)}.kpi.dr .v{color:var(--rojo)}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+  .panel h3{font-size:15px;margin-bottom:2px}.panel .ps{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:var(--muted)}
+  .legend .d{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;padding:8px 6px;border-bottom:1.5px solid var(--line)}
+  th.r,td.r{text-align:right}
+  td{padding:10px 6px;border-bottom:1px solid #eef3f0}
+  .sem{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:12.5px}
+  .sem .dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+  .sem.verde .dot{background:var(--verde)}.sem.ambar .dot{background:var(--ambar)}.sem.rojo .dot{background:var(--rojo)}
+  .name-c{font-weight:600}
+  .act{font-size:11.5px;color:var(--muted)}
+  .act.hot{color:var(--rojo);font-weight:600}
+  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:12px}
+  @media(max-width:620px){.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M21 21l-1-1M3 3l1 1M18 22l4-4M2 6l4-4M6 18l-4 4M22 18l-4-4"/></svg></div>
+  <div><div class="name">CrossBox Demo</div><div class="sub">Semáforo de socios y cuotas</div></div>
+  <div class="spacer"></div>
+  <span class="badge">Datos de ejemplo</span>
+</div>
+<div class="wrap">
+  <div class="kpis" id="kpis"></div>
+  <div class="panel">
+    <h3>Socios por riesgo de baja</h3>
+    <div class="ps">Cruzamos cuándo vino por última vez con cuántas veces entrena al mes. Los de arriba son los que hay que atender ya.</div>
+    <div class="legend">
+      <span><span class="d" style="background:var(--rojo)"></span>Baja probable</span>
+      <span><span class="d" style="background:var(--ambar)"></span>En riesgo</span>
+      <span><span class="d" style="background:var(--verde)"></span>Activo</span>
+    </div>
+    <div style="overflow-x:auto"><table id="tbl"></table></div>
+    <div class="foot">Panel de solo lectura · Pulso actualiza los datos desde el sistema de reservas del box.</div>
+  </div>
+</div>
+<script>
+const SOCIOS=[
+ {n:'Ana G.',cuota:45,dias:2,mes:14},{n:'Bruno M.',cuota:45,dias:5,mes:10},
+ {n:'Carla R.',cuota:60,dias:9,mes:6},{n:'David L.',cuota:45,dias:18,mes:4},
+ {n:'Elena S.',cuota:55,dias:1,mes:16},{n:'Fran T.',cuota:45,dias:12,mes:5},
+ {n:'Gema P.',cuota:60,dias:22,mes:2},{n:'Hugo V.',cuota:45,dias:6,mes:9},
+ {n:'Irene D.',cuota:35,dias:16,mes:3},{n:'Jorge A.',cuota:45,dias:4,mes:12},
+ {n:'Laura N.',cuota:55,dias:10,mes:5},{n:'Marco B.',cuota:45,dias:3,mes:11},
+];
+function estado(s){ if(s.dias>14||s.mes<3) return'rojo'; if(s.dias>=8||s.mes<=5) return'ambar'; return'verde'; }
+const RANK={rojo:0,ambar:1,verde:2};
+const LAB={rojo:'Baja probable',ambar:'En riesgo',verde:'Activo'};
+const ACT={rojo:'Llamar hoy',ambar:'Enviar mensaje',verde:'—'};
+function e0(n){return Math.round(n).toLocaleString('es-ES')+' \u20AC'}
+function calc(){
+ const rows=SOCIOS.map(s=>({...s,est:estado(s)})).sort((a,b)=>RANK[a.est]-RANK[b.est]||b.cuota-a.cuota);
+ const verde=rows.filter(r=>r.est==='verde').length,ambar=rows.filter(r=>r.est==='ambar').length,rojo=rows.filter(r=>r.est==='rojo').length;
+ const mrr=rows.reduce((a,r)=>a+r.cuota,0);
+ const mrrRiesgo=rows.filter(r=>r.est!=='verde').reduce((a,r)=>a+r.cuota,0);
+ return{rows,verde,ambar,rojo,mrr,mrrRiesgo,total:rows.length}}
+const D=calc();
+function kpis(){document.getElementById('kpis').innerHTML=`
+ <div class="kpi"><div class="l">Cuota recurrente</div><div class="v">${e0(D.mrr)}</div><div class="s">al mes · ${D.total} socios</div></div>
+ <div class="kpi dv"><div class="l">Activos</div><div class="v">${D.verde}</div><div class="s">al día con su ritmo</div></div>
+ <div class="kpi da"><div class="l">En riesgo</div><div class="v">${D.ambar}</div><div class="s">empiezan a fallar</div></div>
+ <div class="kpi dr"><div class="l">Baja probable</div><div class="v">${D.rojo}</div><div class="s">${e0(D.mrrRiesgo)}/mes en juego</div></div>`}
+function tbl(){let h=`<thead><tr><th>Estado</th><th>Socio</th><th class="r hide-sm">Últ. visita</th><th class="r hide-sm">Asist./mes</th><th class="r">Cuota</th><th class="hide-sm">Acción</th></tr></thead><tbody>`;
+ D.rows.forEach(r=>{h+=`<tr>
+   <td><span class="sem ${r.est}"><span class="dot"></span>${LAB[r.est]}</span></td>
+   <td class="name-c">${r.n}</td>
+   <td class="r hide-sm">hace ${r.dias} d</td>
+   <td class="r hide-sm">${r.mes}</td>
+   <td class="r">${e0(r.cuota)}</td>
+   <td class="hide-sm"><span class="act ${r.est==='rojo'?'hot':''}">${ACT[r.est]}</span></td></tr>`});
+ h+=`</tbody>`;document.getElementById('tbl').innerHTML=h}
+kpis();tbl();
+</script>
+</body>
+</html>

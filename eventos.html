@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eventos · panel de rentabilidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--brand:#241634;--acc:#7C3AED;--acc2:#C4B5FD;--ink:#1e1830;--muted:#7c7391;--line:#e7e2ef;--app:#f3f0f8;--paper:#fff;--ok:#16a34a;--radius:16px;--shadow:0 1px 2px rgba(36,22,52,.06),0 10px 30px rgba(36,22,52,.08)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--app);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Archivo',sans-serif}
+  .topbar{position:sticky;top:0;z-index:30;background:var(--brand);color:#fff;display:flex;align-items:center;gap:12px;padding:13px 18px}
+  .logo{width:38px;height:38px;border-radius:10px;background:var(--acc);color:#fff;display:grid;place-items:center;flex:0 0 auto}
+  .topbar .name{font-family:'Archivo';font-weight:700;font-size:17px}
+  .topbar .sub{font-size:11px;opacity:.72;text-transform:uppercase;letter-spacing:.4px}
+  .topbar .spacer{flex:1}
+  .badge{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc2);border:1px solid rgba(196,181,253,.4);border-radius:100px;padding:4px 10px}
+  .wrap{max-width:1120px;margin:0 auto;padding:20px 18px 50px}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
+  @media(min-width:760px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+  .kpi .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+  .kpi .v{font-family:'Archivo';font-weight:800;font-size:24px;line-height:1}
+  .kpi .v.ok{color:var(--ok)}.kpi .v.acc{color:var(--acc)}
+  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:5px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:18px}
+  .panel h3{font-size:15px;margin-bottom:2px}
+  .panel .ps{font-size:12px;color:var(--muted);margin-bottom:16px}
+  .chart{width:100%;overflow-x:auto}
+  svg{display:block}
+  .bar-lbl{font-size:9px;fill:var(--muted);font-family:'Inter'}
+  .bar-val{font-size:9.5px;fill:var(--ink);font-family:'Archivo';font-weight:700}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;padding:8px 6px;border-bottom:1.5px solid var(--line)}
+  th.r,td.r{text-align:right}
+  td{padding:9px 6px;border-bottom:1px solid #f1eef6}
+  td.ev{font-weight:600}
+  td.small{font-size:11.5px;color:var(--muted)}
+  .benef{font-family:'Archivo';font-weight:700;color:var(--ok)}
+  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:8px}
+  @media(max-width:620px){.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+  <div><div class="name">La Sonora del Sur</div><div class="sub">Panel de rentabilidad de eventos</div></div>
+  <div class="spacer"></div>
+  <span class="badge">Datos de ejemplo</span>
+</div>
+<div class="wrap">
+  <div class="kpis" id="kpis"></div>
+  <div class="panel">
+    <h3>Beneficio por bolo</h3>
+    <div class="ps">Lo que queda de cada actuación después de gastos · temporada actual</div>
+    <div class="chart" id="chart"></div>
+  </div>
+  <div class="panel">
+    <h3>Detalle de eventos</h3>
+    <div class="ps">Caché + merchandising − gastos = beneficio</div>
+    <div style="overflow-x:auto"><table id="tbl"></table></div>
+    <div class="foot">Panel de solo lectura · los datos los mantiene Pulso a partir de tu hoja de control.</div>
+  </div>
+</div>
+<script>
+const EVENTS=[
+ {f:'12 ene',lugar:'Sala Aurora · Málaga',cache:1200,gastos:400,merch:320},
+ {f:'03 feb',lugar:'Teatro Real · Sevilla',cache:1800,gastos:650,merch:540},
+ {f:'22 feb',lugar:'Evento privado · Feria',cache:2500,gastos:800,merch:210},
+ {f:'15 mar',lugar:'Sala Groove · Granada',cache:950,gastos:380,merch:180},
+ {f:'06 abr',lugar:'Boda · evento privado',cache:2200,gastos:500,merch:0},
+ {f:'20 abr',lugar:'Festival Primavera',cache:3000,gastos:1100,merch:780},
+ {f:'11 may',lugar:'Sala Aurora · Málaga',cache:1300,gastos:420,merch:360},
+ {f:'01 jun',lugar:'Fiestas del pueblo',cache:2800,gastos:700,merch:450},
+];
+function fmt(n){n=Math.round(n*100)/100;const s=n.toFixed(2).split('.');s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');return s[0]+','+s[1]}
+function eur(n){return fmt(n)+' \u20AC'}
+function e0(n){return Math.round(n).toLocaleString('es-ES')+' \u20AC'}
+function calc(){let cache=0,gastos=0,merch=0;const rows=EVENTS.map(e=>{const b=e.cache+e.merch-e.gastos;cache+=e.cache;gastos+=e.gastos;merch+=e.merch;return{...e,benef:b}});
+ const ingresos=cache+merch,beneficio=ingresos-gastos,n=EVENTS.length;
+ return{rows,cache,gastos,merch,ingresos,beneficio,n,cacheMed:cache/n,benefMed:beneficio/n}}
+const D=calc();
+function kpis(){document.getElementById('kpis').innerHTML=`
+  <div class="kpi"><div class="l">Bolos</div><div class="v">${D.n}</div><div class="s">esta temporada</div></div>
+  <div class="kpi"><div class="l">Ingresos</div><div class="v acc">${e0(D.ingresos)}</div><div class="s">cachés + merch</div></div>
+  <div class="kpi"><div class="l">Beneficio</div><div class="v ok">${e0(D.beneficio)}</div><div class="s">tras ${e0(D.gastos)} de gastos</div></div>
+  <div class="kpi"><div class="l">Beneficio medio</div><div class="v">${e0(D.benefMed)}</div><div class="s">por bolo</div></div>`}
+function chart(){
+ const w=Math.max(560,D.rows.length*68),h=200,pad=30,bw=40,gap=(w-pad*2-bw*D.rows.length)/(D.rows.length-1);
+ const max=Math.max(...D.rows.map(r=>r.benef));
+ let bars='';D.rows.forEach((r,i)=>{const x=pad+i*(bw+gap);const bh=(r.benef/max)*(h-60);const y=h-30-bh;
+  bars+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="5" fill="url(#g)"/>
+   <text class="bar-val" x="${x+bw/2}" y="${y-5}" text-anchor="middle">${Math.round(r.benef/1000*10)/10}k</text>
+   <text class="bar-lbl" x="${x+bw/2}" y="${h-14}" text-anchor="middle">${r.f}</text>`});
+ document.getElementById('chart').innerHTML=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#A78BFA"/></linearGradient></defs>${bars}</svg>`}
+function tbl(){let h=`<thead><tr><th>Fecha</th><th>Evento</th><th class="r hide-sm">Caché</th><th class="r hide-sm">Merch</th><th class="r hide-sm">Gastos</th><th class="r">Beneficio</th></tr></thead><tbody>`;
+ D.rows.forEach(r=>{h+=`<tr><td class="small">${r.f}</td><td class="ev">${r.lugar}</td><td class="r hide-sm">${e0(r.cache)}</td><td class="r hide-sm">${e0(r.merch)}</td><td class="r hide-sm">${e0(r.gastos)}</td><td class="r benef">${e0(r.benef)}</td></tr>`});
+ h+=`</tbody><tfoot><tr><td></td><td style="font-weight:700">Total</td><td class="r hide-sm" style="font-weight:700">${e0(D.cache)}</td><td class="r hide-sm" style="font-weight:700">${e0(D.merch)}</td><td class="r hide-sm" style="font-weight:700">${e0(D.gastos)}</td><td class="r benef" style="font-size:15px">${e0(D.beneficio)}</td></tr></tfoot>`;
+ document.getElementById('tbl').innerHTML=h}
+kpis();chart();tbl();
+</script>
+</body>
+</html>
