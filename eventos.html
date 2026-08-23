@@ -1,206 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eventos · panel de la banda</title>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{--brand:#241634;--acc:#7C3AED;--acc2:#C4B5FD;--ink:#1e1830;--muted:#7c7391;--line:#e7e2ef;--app:#f3f0f8;--paper:#fff;--ok:#16a34a;--amb:#F59E0B;--rojo:#EF4444;--radius:16px;--shadow:0 1px 2px rgba(36,22,52,.06),0 10px 30px rgba(36,22,52,.08)}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter',system-ui,sans-serif;background:var(--app);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
-  h1,h2,h3{font-family:'Archivo',sans-serif}
-  .topbar{position:sticky;top:0;z-index:30;background:var(--brand);color:#fff;display:flex;align-items:center;gap:12px;padding:13px 18px}
-  .logo{width:38px;height:38px;border-radius:10px;background:var(--acc);color:#fff;display:grid;place-items:center;flex:0 0 auto}
-  .topbar .name{font-family:'Archivo';font-weight:700;font-size:17px}
-  .topbar .sub{font-size:11px;opacity:.72;text-transform:uppercase;letter-spacing:.4px}
-  .topbar .spacer{flex:1}
-  .badge{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--acc2);border:1px solid rgba(196,181,253,.4);border-radius:100px;padding:4px 10px}
-  .wrap{max-width:1120px;margin:0 auto;padding:20px 18px 50px}
-  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
-  @media(min-width:760px){.kpis{grid-template-columns:repeat(4,1fr)}}
-  .kpi{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
-  .kpi .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
-  .kpi .v{font-family:'Archivo';font-weight:800;font-size:23px;line-height:1}
-  .kpi .v.ok{color:var(--ok)}.kpi .v.acc{color:var(--acc)}
-  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:5px}
-  .panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:18px}
-  .panel h3{font-size:15px;margin-bottom:2px}
-  .panel .ps{font-size:12px;color:var(--muted);margin-bottom:16px}
-  .fin{display:grid;grid-template-columns:1fr;gap:18px}
-  @media(min-width:780px){.fin{grid-template-columns:1.4fr 1fr}}
-  .pl{border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  .pl-row{display:flex;justify-content:space-between;align-items:baseline;padding:11px 14px;font-size:14px;border-bottom:1px solid #f1eef6}
-  .pl-row:last-child{border-bottom:0}
-  .pl-row .lbl .sub{display:block;font-size:10.5px;color:var(--muted);font-weight:400}
-  .pl-row .amt{font-family:'Archivo';font-weight:700;white-space:nowrap}
-  .pl-row.minus .lbl,.pl-row.minus .amt{color:var(--muted)}
-  .pl-row.sub{background:#faf8fd}.pl-row.sub .lbl{font-weight:700}.pl-row.sub .amt{font-weight:800}
-  .pl-row.ebitda{background:linear-gradient(90deg,rgba(124,58,237,.10),rgba(124,58,237,.03))}
-  .pl-row.ebitda .lbl{font-family:'Archivo';font-weight:800;font-size:15px;color:var(--acc)}
-  .pl-row.ebitda .amt{font-size:17px;color:var(--acc)}
-  .pl-row.net .lbl{font-weight:800}.pl-row.net .amt{font-size:16px;color:var(--ok)}
-  .pct{font-size:11px;color:var(--muted);font-weight:600;margin-left:8px}
-  .side{display:flex;flex-direction:column;gap:12px}
-  .fcard{border:1px solid var(--line);border-radius:12px;padding:14px 15px}
-  .fcard .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-  .fcard .v{font-family:'Archivo';font-weight:800;font-size:22px}
-  .fcard .s{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.5}
-  .fcard.hi{background:linear-gradient(160deg,#2b1b45,#241634);color:#fff;border:0}
-  .fcard.hi .l{color:var(--acc2)}.fcard.hi .s{color:#c7bfe0}
-  /* trimestres */
-  .qgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
-  @media(min-width:760px){.qgrid{grid-template-columns:repeat(4,1fr)}}
-  .qcard{border:1px solid var(--line);border-radius:12px;padding:14px;position:relative}
-  .qcard .q{font-family:'Archivo';font-weight:800;font-size:13px;color:var(--acc);letter-spacing:.5px}
-  .qcard .qm{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px}
-  .qcard .qv{font-family:'Archivo';font-weight:800;font-size:20px}
-  .qcard .qs{font-size:11px;color:var(--muted);margin-top:3px}
-  .qcard .qbar{height:6px;border-radius:5px;background:#eee6f6;margin-top:10px;overflow:hidden}
-  .qcard .qfill{height:100%;border-radius:5px;background:linear-gradient(90deg,#7C3AED,#A78BFA)}
-  .chart{width:100%;overflow-x:auto}svg{display:block}
-  .bar-lbl{font-size:9px;fill:var(--muted);font-family:'Inter'}.bar-val{font-size:9.5px;fill:var(--ink);font-family:'Archivo';font-weight:700}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th{text-align:left;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;padding:8px 6px;border-bottom:1.5px solid var(--line)}
-  th.r,td.r{text-align:right}
-  td{padding:9px 6px;border-bottom:1px solid #f1eef6}
-  td.ev{font-weight:600}td.small{font-size:11.5px;color:var(--muted)}
-  .benef{font-family:'Archivo';font-weight:700;color:var(--ok)}
-  .qtag{font-size:9.5px;font-weight:700;color:var(--acc);background:#f0e9fb;border-radius:5px;padding:1px 6px}
-  .stock{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12px}.stock .dot{width:9px;height:9px;border-radius:50%}
-  .stock.ok .dot{background:var(--ok)}.stock.amb .dot{background:var(--amb)}.stock.low .dot{background:var(--rojo)}.stock.low{color:var(--rojo)}
-  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:8px}
-  @media(max-width:620px){.hide-sm{display:none}}
-</style>
-</head>
-<body>
-<div class="topbar">
-  <div class="logo"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
-  <div><div class="name">La Sonora del Sur</div><div class="sub">Panel de la banda · economía y eventos</div></div>
-  <div class="spacer"></div>
-  <span class="badge">Datos de ejemplo</span>
-</div>
-<div class="wrap">
-  <div class="kpis" id="kpis"></div>
-
-  <div class="panel">
-    <h3>Radiografía económica · año</h3>
-    <div class="ps">De lo que entra a lo que de verdad queda. EBITDA = beneficio operativo antes de intereses, impuestos y amortizaciones.</div>
-    <div class="fin"><div class="pl" id="pl"></div><div class="side" id="side"></div></div>
-  </div>
-
-  <div class="panel">
-    <h3>Por trimestres</h3>
-    <div class="ps">Cómo se reparte el año. El verano (Q3) es la temporada alta de festivales y fiestas.</div>
-    <div class="qgrid" id="qgrid"></div>
-    <div style="overflow-x:auto"><table id="qtbl"></table></div>
-  </div>
-
-  <div class="panel">
-    <h3>Aportación por bolo</h3>
-    <div class="ps">Lo que deja cada actuación (caché + merch − gastos del bolo), antes de la estructura de la banda.</div>
-    <div class="chart" id="chart"></div>
-  </div>
-
-  <div class="panel">
-    <h3>Detalle de eventos</h3>
-    <div class="ps">Caché + merchandising − gastos del bolo</div>
-    <div style="overflow-x:auto"><table id="tbl"></table></div>
-  </div>
-
-  <div class="panel">
-    <h3>Merchandising · ventas y stock</h3>
-    <div class="ps">Qué se vende, cuánto deja y qué queda en el trastero. En rojo, lo que hay que reponer.</div>
-    <div class="kpis" id="mkpis" style="margin-bottom:16px"></div>
-    <div style="overflow-x:auto"><table id="mtbl"></table></div>
-    <div class="foot">Panel de solo lectura · Pulso mantiene los datos desde tu hoja de control.</div>
-  </div>
-</div>
-<script>
-const EVENTS=[
- {q:1,f:'12 ene',lugar:'Sala Aurora · Málaga',cache:1200,gastos:400,merch:320},
- {q:1,f:'03 feb',lugar:'Teatro Real · Sevilla',cache:1800,gastos:650,merch:540},
- {q:1,f:'22 feb',lugar:'Evento privado · Feria',cache:2500,gastos:800,merch:210},
- {q:1,f:'15 mar',lugar:'Sala Groove · Granada',cache:950,gastos:380,merch:180},
- {q:2,f:'06 abr',lugar:'Boda · evento privado',cache:2200,gastos:500,merch:0},
- {q:2,f:'20 abr',lugar:'Festival Primavera',cache:3000,gastos:1100,merch:780},
- {q:2,f:'11 may',lugar:'Sala Aurora · Málaga',cache:1300,gastos:420,merch:360},
- {q:2,f:'01 jun',lugar:'Fiestas del pueblo',cache:2800,gastos:700,merch:450},
- {q:3,f:'12 jul',lugar:'Festival de verano',cache:3200,gastos:1200,merch:620},
- {q:3,f:'26 jul',lugar:'Fiestas patronales',cache:2600,gastos:650,merch:380},
- {q:3,f:'16 ago',lugar:'Feria de agosto',cache:3500,gastos:900,merch:700},
- {q:3,f:'09 sep',lugar:'Sala Aurora · Málaga',cache:1300,gastos:420,merch:340},
- {q:4,f:'18 oct',lugar:'Teatro · Córdoba',cache:1900,gastos:600,merch:400},
- {q:4,f:'22 nov',lugar:'Boda · evento privado',cache:2400,gastos:550,merch:0},
- {q:4,f:'20 dic',lugar:'Concierto de Navidad',cache:2800,gastos:750,merch:560},
-];
-const MERCH=[
- {p:'Camiseta del logo',pvp:18,coste:7,vend:150,stock:48},
- {p:'CD "En directo"',pvp:12,coste:3,vend:95,stock:30},
- {p:'Sudadera',pvp:35,coste:16,vend:22,stock:7},
- {p:'Vinilo edición limitada',pvp:25,coste:11,vend:16,stock:4},
- {p:'Gorra bordada',pvp:14,coste:5,vend:25,stock:18},
- {p:'Tote bag',pvp:10,coste:4,vend:48,stock:12},
-];
-const GG=[['Local de ensayo',1800],['Seguro y SGAE',400],['Web y distribución',300],['Gestoría',600],['Mantenimiento de equipo',500],['Promoción',740]];
-const CAPEX=12000, AMORT_ANOS=5;
-const QNAME={1:'ene – mar',2:'abr – jun',3:'jul – sep',4:'oct – dic'};
-function e0(n){return Math.round(n).toLocaleString('es-ES')+' \u20AC'}
-function pc(n){return (n*100).toFixed(1).replace('.',',')+'%'}
-function calc(){let cache=0,gastos=0,merch=0;const rows=EVENTS.map(e=>{const b=e.cache+e.merch-e.gastos;cache+=e.cache;gastos+=e.gastos;merch+=e.merch;return{...e,benef:b}});
- return{rows,cache,gastos,merch,ingresos:cache+merch,n:EVENTS.length}}
-function calcMerch(){let ing=0,mar=0,coste=0,uds=0,low=0;const rows=MERCH.map(m=>{const i=m.pvp*m.vend,c=m.coste*m.vend;ing+=i;coste+=c;mar+=(i-c);uds+=m.vend;
-  const st=m.stock<8?'low':(m.stock<16?'amb':'ok');if(st==='low')low++;return{...m,ing:i,mar:i-c,st}});return{rows,ing,mar,coste,uds,low}}
-function calcQ(){const Q={};[1,2,3,4].forEach(q=>Q[q]={q,n:0,cache:0,merch:0,gastos:0});
- EVENTS.forEach(e=>{const o=Q[e.q];o.n++;o.cache+=e.cache;o.merch+=e.merch;o.gastos+=e.gastos});
- return [1,2,3,4].map(q=>{const o=Q[q];o.ingresos=o.cache+o.merch;o.aporta=o.ingresos-o.gastos;return o})}
-const D=calc(),M=calcMerch(),Q=calcQ();
-function econ(){const ingresos=D.ingresos,costeBolos=D.gastos,costeMerch=M.coste,costesDir=costeBolos+costeMerch,margenBruto=ingresos-costesDir;
- const gg=GG.reduce((a,x)=>a+x[1],0),ebitda=margenBruto-gg,amort=Math.round(CAPEX/AMORT_ANOS),neto=ebitda-amort,umbralBolo=gg/D.n;
- return{ingresos,costeBolos,costeMerch,costesDir,margenBruto,gg,ebitda,amort,neto,umbralBolo}}
-const E=econ();
-function kpis(){document.getElementById('kpis').innerHTML=`
-  <div class="kpi"><div class="l">Ingresos</div><div class="v acc">${e0(E.ingresos)}</div><div class="s">cachés + merch · ${D.n} bolos</div></div>
-  <div class="kpi"><div class="l">EBITDA</div><div class="v ok">${e0(E.ebitda)}</div><div class="s">margen ${pc(E.ebitda/E.ingresos)}</div></div>
-  <div class="kpi"><div class="l">Resultado neto</div><div class="v">${e0(E.neto)}</div><div class="s">antes de impuestos</div></div>
-  <div class="kpi"><div class="l">Merch vendido</div><div class="v acc">${e0(M.ing)}</div><div class="s">${M.uds} unidades</div></div>`}
-function plUI(){document.getElementById('pl').innerHTML=`
-  <div class="pl-row"><span class="lbl">Ingresos totales<span class="sub">cachés + merchandising</span></span><span class="amt">${e0(E.ingresos)}</span></div>
-  <div class="pl-row minus"><span class="lbl">− Costes directos<span class="sub">gastos de bolos + coste del merch vendido</span></span><span class="amt">−${e0(E.costesDir)}</span></div>
-  <div class="pl-row sub"><span class="lbl">= Margen bruto<span class="pct">${pc(E.margenBruto/E.ingresos)}</span></span><span class="amt">${e0(E.margenBruto)}</span></div>
-  <div class="pl-row minus"><span class="lbl">− Gastos generales<span class="sub">local, seguro, gestoría, promoción…</span></span><span class="amt">−${e0(E.gg)}</span></div>
-  <div class="pl-row ebitda"><span class="lbl">= EBITDA<span class="pct">margen ${pc(E.ebitda/E.ingresos)}</span></span><span class="amt">${e0(E.ebitda)}</span></div>
-  <div class="pl-row minus"><span class="lbl">− Amortización de equipo<span class="sub">reparto del equipo por su vida útil</span></span><span class="amt">−${e0(E.amort)}</span></div>
-  <div class="pl-row net"><span class="lbl">= Resultado neto<span class="sub">antes de impuestos, a repartir</span></span><span class="amt">${e0(E.neto)}</span></div>`;
- document.getElementById('side').innerHTML=`
-  <div class="fcard hi"><div class="l">Umbral por bolo</div><div class="v">${e0(E.umbralBolo)}</div><div class="s">Lo que cada actuación debe dejar solo para cubrir la estructura de la banda.</div></div>
-  <div class="fcard"><div class="l">Inversión en equipo (CAPEX)</div><div class="v">${e0(CAPEX)}</div><div class="s">PA, backline y furgoneta. Inversión que se amortiza, no gasto del mes.</div></div>
-  <div class="fcard"><div class="l">Margen EBITDA</div><div class="v" style="color:var(--acc)">${pc(E.ebitda/E.ingresos)}</div><div class="s">De cada 100 € que entran, esto queda como beneficio operativo.</div></div>`}
-function qUI(){const maxI=Math.max(...Q.map(o=>o.ingresos));
- document.getElementById('qgrid').innerHTML=Q.map(o=>`<div class="qcard"><div class="q">Q${o.q}</div><div class="qm">${QNAME[o.q]}</div><div class="qv">${e0(o.ingresos)}</div><div class="qs">${o.n} bolos · aporta ${e0(o.aporta)}</div><div class="qbar"><div class="qfill" style="width:${Math.round(o.ingresos/maxI*100)}%"></div></div></div>`).join('');
- let h=`<thead><tr><th>Trimestre</th><th class="r">Bolos</th><th class="r hide-sm">Cachés</th><th class="r hide-sm">Merch</th><th class="r hide-sm">Gastos</th><th class="r">Ingresos</th><th class="r">Aportación</th></tr></thead><tbody>`;
- Q.forEach(o=>{h+=`<tr><td class="ev"><span class="qtag">Q${o.q}</span> ${QNAME[o.q]}</td><td class="r">${o.n}</td><td class="r hide-sm">${e0(o.cache)}</td><td class="r hide-sm">${e0(o.merch)}</td><td class="r hide-sm">${e0(o.gastos)}</td><td class="r">${e0(o.ingresos)}</td><td class="r benef">${e0(o.aporta)}</td></tr>`});
- const tC=Q.reduce((a,o)=>a+o.cache,0),tM=Q.reduce((a,o)=>a+o.merch,0),tG=Q.reduce((a,o)=>a+o.gastos,0),tI=Q.reduce((a,o)=>a+o.ingresos,0),tA=Q.reduce((a,o)=>a+o.aporta,0);
- h+=`</tbody><tfoot><tr><td style="font-weight:700">Año</td><td class="r" style="font-weight:700">${D.n}</td><td class="r hide-sm" style="font-weight:700">${e0(tC)}</td><td class="r hide-sm" style="font-weight:700">${e0(tM)}</td><td class="r hide-sm" style="font-weight:700">${e0(tG)}</td><td class="r" style="font-weight:700">${e0(tI)}</td><td class="r benef" style="font-size:15px">${e0(tA)}</td></tr></tfoot>`;
- document.getElementById('qtbl').innerHTML=h}
-function chart(){const w=Math.max(560,D.rows.length*58),h=200,pad=26,bw=32,gap=(w-pad*2-bw*D.rows.length)/(D.rows.length-1);
- const max=Math.max(...D.rows.map(r=>r.benef));let bars='';
- D.rows.forEach((r,i)=>{const x=pad+i*(bw+gap),bh=(r.benef/max)*(h-60),y=h-30-bh;
-  bars+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="4" fill="url(#g)"/><text class="bar-val" x="${x+bw/2}" y="${y-5}" text-anchor="middle">${Math.round(r.benef/1000*10)/10}k</text><text class="bar-lbl" x="${x+bw/2}" y="${h-14}" text-anchor="middle">${r.f.split(' ')[1]}</text>`});
- document.getElementById('chart').innerHTML=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#A78BFA"/></linearGradient></defs>${bars}</svg>`}
-function tbl(){let h=`<thead><tr><th class="hide-sm">Q</th><th>Fecha</th><th>Evento</th><th class="r hide-sm">Caché</th><th class="r hide-sm">Merch</th><th class="r hide-sm">Gastos</th><th class="r">Aporta</th></tr></thead><tbody>`;
- D.rows.forEach(r=>{h+=`<tr><td class="hide-sm"><span class="qtag">Q${r.q}</span></td><td class="small">${r.f}</td><td class="ev">${r.lugar}</td><td class="r hide-sm">${e0(r.cache)}</td><td class="r hide-sm">${e0(r.merch)}</td><td class="r hide-sm">${e0(r.gastos)}</td><td class="r benef">${e0(r.benef)}</td></tr>`});
- h+=`</tbody><tfoot><tr><td class="hide-sm"></td><td></td><td style="font-weight:700">Total año</td><td class="r hide-sm" style="font-weight:700">${e0(D.cache)}</td><td class="r hide-sm" style="font-weight:700">${e0(D.merch)}</td><td class="r hide-sm" style="font-weight:700">${e0(D.gastos)}</td><td class="r benef" style="font-size:15px">${e0(D.cache+D.merch-D.gastos)}</td></tr></tfoot>`;
- document.getElementById('tbl').innerHTML=h}
-function merchUI(){document.getElementById('mkpis').innerHTML=`
-  <div class="kpi"><div class="l">Ingresos merch</div><div class="v acc">${e0(M.ing)}</div><div class="s">año</div></div>
-  <div class="kpi"><div class="l">Margen merch</div><div class="v ok">${e0(M.mar)}</div><div class="s">tras coste de compra</div></div>
-  <div class="kpi"><div class="l">Unidades</div><div class="v">${M.uds}</div><div class="s">vendidas</div></div>
-  <div class="kpi"><div class="l">Reponer</div><div class="v" style="color:var(--rojo)">${M.low}</div><div class="s">con stock bajo</div></div>`;
- let h=`<thead><tr><th>Producto</th><th class="r hide-sm">PVP</th><th class="r">Vendidas</th><th class="r hide-sm">Ingresos</th><th class="r hide-sm">Margen</th><th class="r">Stock</th></tr></thead><tbody>`;
- M.rows.forEach(r=>{h+=`<tr><td class="ev">${r.p}</td><td class="r hide-sm">${e0(r.pvp)}</td><td class="r">${r.vend}</td><td class="r hide-sm">${e0(r.ing)}</td><td class="r hide-sm benef">${e0(r.mar)}</td><td class="r"><span class="stock ${r.st}"><span class="dot"></span>${r.stock} ud</span></td></tr>`});
- h+=`</tbody>`;document.getElementById('mtbl').innerHTML=h}
-kpis();plUI();qUI();chart();tbl();merchUI();
-</script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pulso · Banda Musical · panel de cliente</title>
+    <meta name="description" content="Panel de demostración de Pulso para un grupo de música: caja de la noche, registro de ventas de merch, resultado por bolo y cierre financiero con EBITDA." />
+    <link rel="icon" href="pulso.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="pulso-panel.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.PANEL_CLIENTE = 'banda';
+    </script>
+    <script src="pulso-panel.js"></script>
+  </body>
 </html>
