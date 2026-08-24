@@ -166,6 +166,7 @@ const IC = {
   evento:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
   fitness:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M21 21l-1-1M3 3l1 1M18 22l4-4M2 6l4-4M6 18l-4 4M22 18l-4-4"/></svg>',
   salud:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3h6v3H9z"/><path d="M7 14h2l1.5-3.5L13 17l1.5-3H17"/></svg>',
+  factura:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6"/><path d="M14 2v6h6V8"/><path d="M8 7h3M8 11h6M8 15h4"/><circle cx="17.5" cy="17.5" r="4.5"/><path d="M17.5 15.6v2l1.3 1"/></svg>',
 };
 
 const SECTORS = [
@@ -187,6 +188,9 @@ const SECTORS = [
   { id:'fitness', name:'Fitness y box', ic:IC.fitness,
     desc:'Semáforo de bajas y control de cuotas para detectar socios en riesgo antes de que se vayan.',
     live:true, url:'fitness.html' },
+  { id:'facturas', name:'Facturación automática', ic:IC.factura,
+    desc:'Lee cada día tu hoja de clientes recurrentes y el último día del mes emite y envía las facturas solo. Tú únicamente lees el correo del resumen.',
+    live:true, url:'facturas.html' },
   { id:'medicion', name:'Nutrición y entreno', ic:IC.salud,
     desc:'Ficha del paciente: historial de mediciones con su evolución, progreso hacia el peso objetivo y plan de dieta y entreno de la semana.',
     live:true, url:'medicion.html' },

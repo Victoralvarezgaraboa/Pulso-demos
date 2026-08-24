@@ -16,8 +16,9 @@ Este es el enlace que va en la bio de Instagram y en los reels.
 | `eventos.html`   | Música y eventos · panel de rentabilidad por bolo.      |
 | `fitness.html`   | Fitness · semáforo de bajas y cuotas.                   |
 | `medicion.html`  | Nutrición y entreno · ficha del paciente.               |
+| `facturas.html`  | Facturación automática · cierre de mes desde la hoja.   |
 
-Los 7 sectores están **en vivo**. Todos con proveedores, precios, socios y eventos
+Los 8 sectores están **en vivo**. Todos con proveedores, precios, socios y eventos
 **de ejemplo** — ningún dato real de ningún cliente.
 
 ## Cómo ponerlo online (sitio estático, gratis)
