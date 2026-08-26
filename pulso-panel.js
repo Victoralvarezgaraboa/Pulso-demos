@@ -28,7 +28,7 @@
       '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" style="flex-shrink:0"><path d="M2 12h20"/><path d="M6 6.5v11M9.5 8.5v7M14.5 8.5v7M18 6.5v11"/></svg>'
   };
 
-  var CONTACTO = { whatsapp: '34654103406', email: 'pulso.gestiona@gmail.com' };
+  var CONTACTO = { whatsapp: '34654103406', email: 'hola@pulsogestiona.es' };
   var PROVEEDOR = 'pedidos@proveedor.es';
 
   // ---------- estado ----------
