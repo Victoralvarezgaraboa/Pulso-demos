@@ -159,6 +159,7 @@
 <script>
 /* Iconos por sector */
 const IC = {
+  albaran:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6"/><path d="M13 2v6h6"/><path d="M8 12h4M8 16h3"/><circle cx="17.5" cy="16.5" r="3.5"/><path d="M20 19l2 2"/></svg>',
   bolt:'<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
   llave:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.3 2.3-2.7-.7-.7-2.7z"/></svg>',
   reforma:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6"/></svg>',
@@ -176,6 +177,9 @@ const SECTORS = [
   { id:'taller', name:'Taller · recambios', ic:IC.llave,
     desc:'Compara al instante el precio de cada recambio entre tus proveedores y compra siempre al mejor precio.',
     live:true, url:'taller.html' },
+  { id:'albaranes', name:'Albaranes · lector', ic:IC.albaran,
+    desc:'Fotografías el albarán y salen sus líneas solas, y te avisa de las referencias que el proveedor te ha subido de precio desde la última compra.',
+    live:true, url:'albaranes.html' },
   { id:'reformas', name:'Reformas y obra', ic:IC.reforma,
     desc:'Presupuestos por capítulos de obra: albañilería, fontanería, pintura, carpintería… con PDF al momento.',
     live:true, url:'reformas.html' },
